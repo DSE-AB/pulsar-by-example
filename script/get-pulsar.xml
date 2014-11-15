@@ -1,0 +1,167 @@
+<project name="pulsar" default="get-latest-pulsar" basedir="..">
+
+    <description>Get the latest Pulsar</description>
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="lib/tools/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <property name="dest.dir" location="pulsar"/>
+    <property name="lib-devel.dir" location="${dest.dir}/lib-devel"/>
+
+    <target name="get-latest-pulsar" depends="-get-pulsar, -unpack" description="Download and install the latest version of Pulsar"/>
+
+    <target name="-get-pulsar">
+
+        <mkdir dir="${dest.dir}"/>
+
+        <loadproperties>
+            <url url="https://dl.dropboxusercontent.com/u/599403/Pulsar/pulsar-latest.properties"/>
+        </loadproperties>
+
+        <if>
+            <available file="${dest.dir}/${launcher}"/>
+            <else>
+                <delete>
+                    <fileset dir="${dest.dir}" includes="pulsar.launcher-*.jar"/>
+                </delete>
+                <get src="https://dl.dropboxusercontent.com/u/599403/Pulsar/${launcher}" dest="${dest.dir}"/>
+                <!-- todo: run java -jar pulsar.launcher -relink -->
+            </else>
+        </if>
+
+        <if>
+            <available file="${dest.dir}/${modules}"/>
+            <else>
+                <delete>
+                    <fileset dir="${dest.dir}" includes="pulsar-modules-*.pulsar"/>
+                </delete>
+                <get src="https://dl.dropboxusercontent.com/u/599403/Pulsar/${modules}" dest="${dest.dir}"/>
+            </else>
+        </if>
+
+        <if>
+            <available file="${dest.dir}/${apps}"/>
+            <else>
+                <delete>
+                    <fileset dir="${dest.dir}" includes="pulsar-apps-*.pulsar"/>
+                </delete>
+                <get src="https://dl.dropboxusercontent.com/u/599403/Pulsar/${apps}" dest="${dest.dir}"/>
+            </else>
+        </if>
+
+        <if>
+            <available file="${dest.dir}/${endorsed}"/>
+            <else>
+                <delete>
+                    <fileset dir="${dest.dir}" includes="pulsar-endorsed-*.pulsar"/>
+                </delete>
+                <get src="https://dl.dropboxusercontent.com/u/599403/Pulsar/${endorsed}" dest="${dest.dir}"/>
+            </else>
+        </if>
+
+        <if>
+            <available file="${dest.dir}/${docs}"/>
+            <else>
+                <mkdir dir="${dest.dir}/docs"/>
+                <delete>
+                    <fileset dir="${dest.dir}/docs" includes="Pulsar * Documentation - *.pdf"/>
+                </delete>
+                <propertyregex property="docs_url" input="${docs}" regexp=" " replace="%20" global="true"/>
+                <get src="https://dl.dropboxusercontent.com/u/599403/Pulsar/${docs_url}" dest="${dest.dir}/docs/${docs}"/>
+            </else>
+        </if>
+
+    </target>
+
+    <target name="-unpack">
+
+        <delete dir="${lib-devel.dir}/compile"/>
+        <delete dir="${lib-devel.dir}/dist"/>
+
+        <!-- Unpack Pulsar module resources, needed for compile, dist and config-->
+        <unzip src="${dest.dir}/${modules}" dest="${lib-devel.dir}/compile">
+            <patternset>
+                <include name="*.jar"/>
+                <exclude name="derby-*.jar"/>
+                <exclude name="ojdbc-*.jar"/>
+            </patternset>
+        </unzip>
+        <unzip dest="${lib-devel.dir}/compile">
+            <fileset dir="${lib-devel.dir}/compile">
+                <include name="*.jar"/>
+            </fileset>
+            <patternset>
+                <include name="PULSAR-INF/lib-exported/*.jar"/>
+            </patternset>
+            <flattenmapper/>
+        </unzip>
+        <unzip src="${dest.dir}/${modules}" dest="${lib-devel.dir}/dist">
+            <patternset>
+                <include name="**/pulsar.core-*.jar"/>
+                <include name="**/pulsar.packager-*.jar"/>
+            </patternset>
+            <flattenmapper/>
+        </unzip>
+
+        <!-- Unpack resources from Pulsar launcher, needed for compile, dist and config-->
+        <unzip src="${dest.dir}/${launcher}" dest="${lib-devel.dir}/compile">
+            <patternset>
+                <include name="**/slf4j-api-*.jar"/>
+                <include name="**/javax.inject-*.jar"/>
+            </patternset>
+            <flattenmapper/>
+        </unzip>
+        <unzip src="${dest.dir}/${launcher}" dest="${lib-devel.dir}/dist">
+            <patternset>
+                <include name="**/log4j-*.jar"/>
+                <include name="**/logback-*.jar"/>
+            </patternset>
+            <flattenmapper/>
+        </unzip>
+        <unzip src="${dest.dir}/${launcher}" dest="${dest.dir}/conf" overwrite="false">
+            <patternset>
+                <include name="**/logback.xml"/>
+            </patternset>
+            <flattenmapper/>
+        </unzip>
+        <!-- Include the Pulsar Launcher itself as a compile resource -->
+        <copy file="${dest.dir}/${launcher}" todir="${lib-devel.dir}/compile"/>
+
+        <!-- Unpack endorsed resources needed for compilation -->
+        <unzip src="${dest.dir}/${endorsed}" dest="${lib-devel.dir}/compile">
+            <patternset>
+                <include name="**/servlet-api-*.jar"/>
+                <include name="**/geronimo-javamail_1.4_spec-*.jar"/>
+            </patternset>
+            <flattenmapper/>
+        </unzip>
+
+        <!-- Unpack javadoc -->
+        <delete dir="${lib-devel.dir}/docs"/>
+        <mkdir dir="${lib-devel.dir}/docs"/>
+        <unzip dest="${lib-devel.dir}/docs">
+            <fileset dir="${lib-devel.dir}/compile" includes="*.jar"/>
+            <patternset>
+                <include name="PULSAR-INF/docs/api/**"/>
+            </patternset>
+            <mapper>
+                <globmapper from="PULSAR-INF/docs/api/*" to="*"/>
+            </mapper>
+        </unzip>
+        <get src="https://dl.dropboxusercontent.com/u/599403/Pulsar/pulsar-javadoc.zip" dest="${lib-devel.dir}/docs"/>
+        <unzip src="${lib-devel.dir}/docs/pulsar-javadoc.zip"
+               dest="${lib-devel.dir}/docs"/>
+        <delete file="${lib-devel.dir}/docs/pulsar-javadoc.zip"/>
+
+        <antcall target="-create-local-devlink"/>
+    </target>
+
+    <target name="-create-local-devlink">
+        <echo file="pulsar/local-dev-link.pulsarlink">../dist/repository.xml
+        </echo>
+    </target>
+
+</project>

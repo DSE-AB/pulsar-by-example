@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="pulsar.launcher-link">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/pulsar/pulsar.launcher-link.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/pulsar/pulsar.launcher-link.jar!/OSGI-OPT/src" />
+    </SOURCES>
+  </library>
+</component>
