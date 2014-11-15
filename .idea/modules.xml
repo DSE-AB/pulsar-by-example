@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/examples/hello-modules/hello-modules.iml" filepath="$PROJECT_DIR$/examples/hello-modules/hello-modules.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea-conf/pulsar.iml" filepath="$PROJECT_DIR$/.idea-conf/pulsar.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea-conf/pulsar-by-example.iml" filepath="$PROJECT_DIR$/.idea-conf/pulsar-by-example.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dev-tools/pulsar-shell/pulsar-shell.iml" filepath="$PROJECT_DIR$/dev-tools/pulsar-shell/pulsar-shell.iml" />
     </modules>
   </component>
 </project>

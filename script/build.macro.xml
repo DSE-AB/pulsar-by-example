@@ -1,0 +1,366 @@
+<!--
+  ~ Copyright (c) 2013. Deneb Software Engineering AB. All rights reserved.
+  -->
+
+<project name="module">
+
+    <macrodef name="pulsar-module">
+        <attribute name="pulsar.dir"/>
+        <attribute name="dir" default="."/>
+        <attribute name="dependencies-compile" default=""/>
+        <attribute name="dependencies-compile-test" default=""/>
+        <attribute name="dependencies-test" default=""/>
+        <attribute name="dependencies-dist" default=""/>
+        <attribute name="deployable" default="true"/>
+        <attribute name="generate-param-signatures" default="true"/>
+        <attribute name="moveinternalclasses" default="true"/>
+        <attribute name="generate-javadoc" default="true"/>
+        <attribute name="clean-src-gen" default="true"/>
+
+        <sequential>
+
+            <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+                <classpath>
+                    <pathelement location="lib/tools/ant-contrib-1.0b3.jar"/>
+                </classpath>
+            </taskdef>
+
+            <property name="pulsar.dir" location="@{pulsar.dir}"/>
+            <property name="bundle.dir" location="@{dir}"/>
+            <property name="dependencies-compile.list" value="@{dependencies-compile}"/>
+            <property name="dependencies-compile-test.list" value="@{dependencies-compile-test}"/>
+            <property name="dependencies-test.list" value="@{dependencies-test}"/>
+            <property name="dependencies-dist.list" value="@{dependencies-dist}"/>
+
+            <property name="src" location="${bundle.dir}/src"/>
+            <property name="src-gen" location="${bundle.dir}/src-gen"/>
+            <property name="src-test" location="${bundle.dir}/src-test"/>
+            <property name="classes" location="${bundle.dir}/classes"/>
+            <property name="classes-test" location="${bundle.dir}/classes-test"/>
+            <property name="docs-api" location="${bundle.dir}/docs/api"/>
+            <property name="reports" location="${bundle.dir}/reports"/>
+            <property name="dist"  location="${bundle.dir}/dist"/>
+            <property name="resources"  location="${bundle.dir}/resources"/>
+            <property name="depend" location="${bundle.dir}/depend"/>
+            <property name="conf" location="${bundle.dir}/conf"/>
+            <property name="lib" location="${bundle.dir}/lib"/>
+
+            <property name="src.encoding" value="UTF-8"/>
+
+            <property name="depend-compile"  location="${depend}/compile"/>
+            <property name="depend-compile-test"  location="${depend}/compile-test"/>
+            <property name="depend-test"  location="${depend}/test"/>
+            <property name="depend-dist"  location="${depend}/dist"/>
+
+            <property name="clean.src-gen" value="@{clean-src-gen}"/>
+
+            <property name="dist.moveinternalclasses" value="@{moveinternalclasses}"/>
+
+            <property name="user.name.trimmed" value="${user.name}"/>
+
+            <condition property="dist.generate-param-signatures">
+                <istrue value="@{generate-param-signatures}"/>
+            </condition>
+
+            <condition property="is.deployable">
+                <istrue value="@{deployable}"/>
+            </condition>
+
+            <condition property="no.javadoc">
+                <isfalse value="@{generate-javadoc}"/>
+            </condition>
+
+            <condition property="compile.compilerarg"
+                       value='-Xlint:-processing -processor se.dse.pulsar.module.parammanager.apt.APTProcessor -AparamPath="${classes}/PARAM-INF"'
+                       else="">
+                <istrue value="@{generate-param-signatures}"/>
+            </condition>
+
+            <condition property="src-test.exists">
+                <available file="${src-test}" type="dir"/>
+            </condition>
+
+            <path id="compile.src.path">
+                <dirset dir="${bundle.dir}" erroronmissingdir="false">
+                    <include name="src"/>
+                    <include name="src-gen"/>
+                </dirset>
+            </path>
+
+            <path id="classpath-lib-compile"><!-- Default compile libs -->
+                <fileset dir="${pulsar.dir}/lib-devel">
+                    <include name="compile/**/*.jar"/>
+                    <include name="tools/bndlib-*.jar"/>
+                </fileset>
+            </path>
+
+            <path id="classpath-lib-test"><!-- Default test libs -->
+                <fileset dir="${pulsar.dir}/lib-devel">
+                    <include name="test/**/*.jar"/>
+                </fileset>
+            </path>
+
+            <path id="classpath-lib-dist"><!-- Default dist libs -->
+                <fileset dir="${pulsar.dir}/lib-devel">
+                    <include name="dist/**/*.jar"/>
+                </fileset>
+            </path>
+
+            <path id="classpath-lib-tools"><!-- Default tools libs -->
+                <fileset dir="${pulsar.dir}/lib/tools">
+                    <include name="**/*.jar"/>
+                    <include name="*.jar"/>
+                </fileset>
+            </path>
+
+
+            <path id="classpath-bundle-internal-lib"><!-- Bundle internal libs-->
+                <fileset dir="${bundle.dir}/lib/internal" includes="**/*.jar" erroronmissingdir="false"/>
+            </path>
+
+            <path id="classpath-bundle-exported-lib"><!-- Bundle exported libs-->
+                <fileset dir="${bundle.dir}/lib/exported" includes="**/*.jar" erroronmissingdir="false"/>
+            </path>
+
+            <propertyregex override="yes" property="user.name.trimmed" input="${user.name.trimmed}"
+                           regexp=" " replace="" global="true" />
+
+        </sequential>
+    </macrodef>
+
+    <macrodef name="fetch-dependency">
+        <attribute name="type"/>
+        <attribute name="todir"/>
+        <sequential>
+            <echo message="* ${ant.project.name}: Fetching @{type} dependency -> ${arg.module.name}"/>
+            <ant antfile="${pulsar.dir}/${arg.module.name}/script/build.xml" target="dist"
+                 inheritall="false" inheritrefs="false"/>
+            <copy todir="@{todir}" preservelastmodified="true">
+                <fileset dir="${pulsar.dir}/${arg.module.name}/dist" includes="*.jar"/>
+                <fileset dir="${pulsar.dir}/${arg.module.name}/lib/exported" erroronmissingdir="false" includes="*.jar"/>
+            </copy>
+        </sequential>
+    </macrodef>
+
+    <extension-point name="dependencies-compile" depends="-dependencies-compile"/>
+
+    <target name="compile" depends="dependencies-compile">
+        <echo message="* ${ant.project.name}: Compiling"/>
+        <uptodate property="dist.param" targetfile="${classes}/PARAM-INF/param.xml" >
+            <srcfiles dir= "${src}" includes="**/*.java"/>
+        </uptodate>
+        <antcall target="-clean-classes"/>
+        <mkdir dir="${classes}"/>
+        <javac destdir="${classes}" debug="true" includeantruntime="false" debuglevel="lines,vars,source" encoding="${src.encoding}">
+            <src refid="compile.src.path"/>
+            <classpath>
+                <path refid="classpath-lib-compile"/>
+                <path refid="classpath-bundle-exported-lib"/>
+                <path refid="classpath-bundle-internal-lib"/>
+                <path>
+                    <fileset dir="${depend-compile}" includes="*.jar"/>
+                </path>
+            </classpath>
+            <compilerarg line="${compile.compilerarg}"/>
+        </javac>
+    </target>
+
+    <target name="compile-test" depends="compile, -dependencies-compile-test" if="src-test.exists">
+        <echo message="* ${ant.project.name}: Compiling tests"/>
+        <mkdir dir="${classes-test}"/>
+        <javac srcdir="${src-test}" destdir="${classes-test}" debug="true" includeantruntime="false" debuglevel="lines,vars,source" encoding="${src.encoding}">
+            <classpath>
+                <path refid="classpath-lib-compile"/>
+                <path refid="classpath-lib-test"/>
+                <path refid="classpath-bundle-exported-lib"/>
+                <path refid="classpath-bundle-internal-lib"/>
+                <path>
+                    <fileset dir="${depend-compile}" includes="*.jar"/>
+                    <fileset dir="${depend-compile-test}" includes="*.jar"/>
+                </path>
+                <pathelement location="${classes}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="test" depends="dist, compile-test, -dependencies-test" if="src-test.exists">
+        <echo message="* ${ant.project.name}: Running tests"/>
+        <mkdir dir="${reports}"/>
+        <junit printsummary="yes" haltonfailure="no" dir="${pulsar.dir}" failureproperty="tests.failed">
+            <classpath>
+                <path refid="classpath-lib-compile"/>
+                <path refid="classpath-bundle-exported-lib"/>
+                <path refid="classpath-bundle-internal-lib"/>
+                <path refid="classpath-lib-test"/>
+                <path>
+                    <fileset dir="${depend-compile}" includes="*.jar"/>
+                    <fileset dir="${depend-compile-test}" includes="*.jar"/>
+                    <fileset dir="${depend-test}" includes="*.jar"/>
+                </path>
+                <pathelement location="${classes}"/>
+                <pathelement location="${classes-test}"/>
+            </classpath>
+            <formatter type="xml"/>
+            <batchtest fork="yes" todir="${reports}">
+                <fileset dir="${src-test}">
+                    <include name="**/Test*.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <extension-point name="dependencies-dist" depends="compile, -dependencies-dist"/>
+
+    <target name="-javadoc" unless="no.javadoc">
+        <echo message="* ${ant.project.name}: Generating JavaDoc"/>
+        <javadoc
+                destdir="${docs-api}"
+                author="false"
+                version="false"
+                use="true"
+                windowtitle="${ant.project.name}"
+                additionalparam="-quiet">
+
+            <packageset dir="src" defaultexcludes="yes">
+                <include name="**/api/**"/>
+            </packageset>
+            <classpath>
+                <path refid="classpath-lib-compile"/>
+                <path refid="classpath-bundle-exported-lib"/>
+                <path refid="classpath-bundle-internal-lib"/>
+                <path>
+                    <fileset dir="${depend-compile}" includes="*.jar"/>
+                </path>
+            </classpath>
+
+            <doctitle><![CDATA[<h1>API Documentation</h1>]]></doctitle>
+            <bottom><![CDATA[<i>Copyright &#169; 2014 Deneb Software Engineering AB.</i>]]></bottom>
+        </javadoc>
+    </target>
+
+    <target name="dist" depends="-check-bundle-dist-uptodate" unless="bundle.dist.uptodate" description="Bygger modulen.">
+        <antcall target="dependencies-dist"/>
+        <!-- todo: detect changes -->
+        <!-- Recreate the distribution directory -->
+        <delete dir="${dist}" failonerror="false"/>
+        <mkdir dir="${dist}"/>
+
+        <antcall target="-javadoc"/>
+
+        <fileset dir="${depend-compile}" id="depend-compile-fileset">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathconvert refid="depend-compile-fileset" property="depend-compile-list" pathsep='" "'/>
+
+        <pathconvert refid="classpath-lib-compile" property="compile-list" pathsep='" "'/>
+
+        <condition property="build.code" value="${user.name.trimmed}">
+            <not><isset property="build.code"/></not>
+        </condition>
+
+        <echo message="* ${ant.project.name}: Packaging"/>
+        <java classname="se.dse.pulsar.packager.api.Packager" fork="true" dir="." failonerror="true" maxmemory="1024m">
+            <jvmarg value="-Dse.dse.pulsar.packager.buildcode=${build.code}"/>
+            <jvmarg value="-Dse.dse.pulsar.packager.includesrc=${dist.includesrc}"/>
+            <jvmarg value="-Dse.dse.pulsar.packager.includejavadoc=true"/>
+            <jvmarg value="-Dse.dse.pulsar.packager.moveinternalclasses=${dist.moveinternalclasses}"/>
+            <!--jvmarg value="-Dlogback.configurationFile=${pulsar.dir}/conf/logback.xml"/--><!-- todo genererar loggar under modulkatalogen!-->
+            <!-- the pulsar root directory -->
+            <arg value="${pulsar.dir}"/>
+            <!-- the module directory -->
+            <arg value="${bundle.dir}"/>
+            <!-- list of libraries to get package semantic versions based on -->
+            <arg line="${depend-compile-list}"/>
+            <arg line='"${compile-list}"'/>
+            <classpath>
+                <path>
+                    <pathelement path="${pulsar.dir}/pulsar.launcher-link.jar"/>
+                    <!--fileset dir="${pulsar.dir}/lib-devel/compile" includes="slf4j-*.jar"/-->
+                    <!--fileset dir="${pulsar.dir}/lib-devel/tools" includes="bndlib-*.jar"/-->
+                </path>
+                <path refid="classpath-lib-dist"/>
+            </classpath>
+        </java>
+
+        <if>
+            <isset property="obr.postpone.build"/>
+            <else>
+                <subant buildpath="${pulsar.dir}/../script" antfile="build.xml" target="-build-repository"/>
+            </else>
+        </if>
+
+    </target>
+
+    <target name="-check-bundle-dist-uptodate">
+        <uptodate property="bundle.dist.uptodate" targetfile="${dist}/dist.properties">
+            <srcresources>
+                <dirset dir="${bundle.dir}"/>
+                <fileset dir= "${src}" includes="**/*"/>
+                <fileset dir= "${conf}" includes="**/*" erroronmissingdir="false"/>
+                <fileset dir= "${lib}" includes="**/*" erroronmissingdir="false"/>
+                <fileset dir= "${resources}" includes="**/*" erroronmissingdir="false"/>
+                <!--fileset dir= "${depend}" includes="**/*" erroronmissingdir="false"/-->
+            </srcresources>
+        </uptodate>
+    </target>
+
+    <target name="-dependencies-compile">
+        <mkdir dir="${depend-compile}"/>
+        <foreach list="${dependencies-compile.list}" param="arg.module.name" target="-dependency-compile" trim="true"/>
+    </target>
+    <target name="-dependency-compile">
+        <fetch-dependency type="source compile" todir="${depend-compile}"/>
+    </target>
+
+    <target name="-dependencies-compile-test">
+        <mkdir dir="${depend-compile-test}"/>
+        <foreach list="${dependencies-compile-test.list}" param="arg.module.name" target="-dependency-compile-test" trim="true"/>
+    </target>
+    <target name="-dependency-compile-test">
+        <fetch-dependency type="test compile" todir="${depend-compile-test}"/>
+    </target>
+
+    <target name="-dependencies-test">
+        <mkdir dir="${depend-test}"/>
+        <foreach list="${dependencies-test.list}" param="arg.module.name" target="-dependency-test" trim="true"/>
+    </target>
+    <target name="-dependency-test">
+        <fetch-dependency type="test" todir="${depend-test}"/>
+    </target>
+
+    <target name="-dependencies-dist">
+        <mkdir dir="${depend-dist}"/>
+        <foreach list="${dependencies-dist.list}" param="arg.module.name" target="-dependency-dist" trim="true"/>
+    </target>
+    <target name="-dependency-dist">
+        <fetch-dependency type="dist" todir="${depend-dist}"/>
+    </target>
+
+    <target name="clean">
+        <echo message="* ${ant.project.name}: Cleaning"/>
+        <if>
+            <istrue value="${clean.src-gen}"/>
+            <then>
+                <delete dir="${src-gen}"/>
+            </then>
+        </if>
+        <delete dir="${classes}"/>
+        <delete dir="${classes-test}"/>
+        <delete dir="${reports}"/>
+        <delete dir="${dist}"/>
+        <delete dir="${depend}"/>
+        <delete dir="${docs-api}"/>
+    </target>
+
+    <target name="-clean-classes" unless="dist.param" if="dist.generate-param-signatures">
+        <delete dir="${classes}"/>
+    </target>
+
+    <target name="_init">
+        <mkdir dir="conf"/>
+        <mkdir dir="src"/>
+        <mkdir dir="src-test"/>
+    </target>
+
+
+</project>

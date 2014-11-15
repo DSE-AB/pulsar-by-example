@@ -1,0 +1,142 @@
+<!--
+  ~ Copyright (c) 2014. Deneb Software Engineering AB. All rights reserved.
+  -->
+
+<project name="pulsar-package">
+
+    <macrodef name="pulsar-package">
+        <attribute name="pulsar.dir" default=".."/>
+        <attribute name="dest.dir" default="dist"/>
+        <attribute name="version"/>
+        <attribute name="name"/>
+        <attribute name="include-modules"/>
+        <attribute name="vendor" default=""/>
+
+        <sequential>
+            <property name="pulsar.dir" location="@{pulsar.dir}"/>
+            <property name="dest.dir" location="${pulsar.dir}/@{dest.dir}"/>
+
+            <property name="package.version" value="@{version}"/>
+            <property name="package.name" value="@{name}"/>
+            <property name="package.vendor" value="@{vendor}"/>
+
+            <property name="include-modules.list" value="@{include-modules}"/>
+
+            <tstamp>
+                <format property="package.build.timestamp" pattern="yyMMdd-HHmm"/>
+            </tstamp>
+
+            <condition property="package.build.id" value="" else=".${build.id}">
+                <not><isset property="build.id"/></not>
+            </condition>
+
+            <condition property="package.build.code" value="-${user.name}" else="-${build.code}">
+                <not><isset property="build.code"/></not>
+            </condition>
+
+            <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+                <classpath>
+                    <pathelement location="@{pulsar.dir}/lib/tools/ant-contrib-1.0b3.jar"/>
+                </classpath>
+            </taskdef>
+
+            <antcall target="-package">
+                <param name="pulsar.dir" value="${pulsar.dir}"/>
+                <param name="dest.dir" value="${dest.dir}"/>
+                <param name="package.version" value="${package.version}"/>
+                <param name="package.name" value="${package.name}"/>
+                <param name="package.vendor" value="${package.vendor}"/>
+                <param name="include-modules.list" value="${include-modules.list}"/>
+                <param name="package.build.timestamp" value="${package.build.timestamp}"/>
+                <param name="package.build.id" value="${package.build.id}"/>
+                <param name="package.build.code" value="${package.build.code}"/>
+            </antcall>
+
+        </sequential>
+    </macrodef>
+
+    <macrodef name="pulsar-link">
+        <attribute name="pulsar.dir" default=".."/>
+        <attribute name="dest.dir" default="dist"/>
+        <attribute name="name"/>
+        <attribute name="url"/>
+        <sequential>
+            <property name="pulsar.dir" location="@{pulsar.dir}"/>
+            <property name="dest.dir" location="${pulsar.dir}/@{dest.dir}"/>
+            <echo message="@{url}" file="${dest.dir}/@{name}.pulsarlink" append="false"/>
+        </sequential>
+    </macrodef>
+
+    <target name="-package" depends="-setup-paths, -build-package"/>
+
+    <target name="-setup-paths">
+        <tempfile property="temp.dir" deleteonexit="true" destDir="${java.io.tmpdir}" prefix="package"/>
+        <echo message="* Creating temporary packaging directory: ${temp.dir}"/>
+        <mkdir dir="${temp.dir}"/>
+
+        <property name="obr.repository.path" location="${temp.dir}"/>
+        <property name="obr.repository.filename" value="repository.xml"/>
+    </target>
+
+    <target name="-build-and-copy-modules-to-temporary-dir">
+        <fail unless="obr.repository.path"/>
+        <foreach list="${include-modules.list}" param="arg.module.path" target="-build-and-copy-module-to-temp-dir" trim="true">
+            <param name="obr.repository.path" location="${obr.repository.path}"/>
+        </foreach>
+    </target>
+    <target name="-build-and-copy-module-to-temp-dir">
+        <fail unless="obr.repository.path"/>
+        <echo message="* Building module ${arg.module.path}"/>
+        <ant target="dist" antfile="${pulsar.dir}/${arg.module.path}/script/build.xml" inheritall="false" inheritrefs="false">
+            <property name="obr.postpone.build" value="true"/>
+        </ant>
+        <echo message="* Copying module ${arg.module.path}"/>
+        <copy todir="${obr.repository.path}" failonerror="true">
+            <fileset dir="${pulsar.dir}/${arg.module.path}/dist">
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="-build-package" depends="-build-and-copy-modules-to-temporary-dir, -index-package">
+        <mkdir dir="${dest.dir}"/>
+        <jar destfile="${dest.dir}/${package.name}-${package.version}${package.build.id}.${package.build.timestamp}${package.build.code}.pulsar">
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Implementation-Vendor" value="${package.vendor}"/>
+                <attribute name="Implementation-Title" value="${package.name}"/>
+                <attribute name="Implementation-Version" value="${package.version}${package.build.id}.${package.build.timestamp}${package.build.code}"/>
+            </manifest>
+            <!-- test to allow developers to get api access using this jar -->
+            <!--zipfileset includes="**/api/**.*" src="modules/core/dist/pulsar.core-2.1.0.140331171030-fredrik.jar">
+                <include name="**/api/**.*"/>
+                <exclude name="*-INF/**"/>
+            </zipfileset-->
+            <fileset dir="${obr.repository.path}">
+                <include name="**/*.jar"/>
+                <include name="repository.xml"/>
+            </fileset>
+        </jar>
+
+    </target>
+
+    <target name="-index-package">
+        <fail unless="pulsar.dir"/>
+        <fail unless="obr.repository.path"/>
+        <fail unless="obr.repository.filename"/>
+        <fileset dir="${obr.repository.path}" id="obr.fileset">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathconvert refid="obr.fileset" property="pathlist" pathsep="' '">
+            <map from="${obr.repository.path}/" to=""/><!-- makes paths relative to repository directory -->
+        </pathconvert>
+        <property name="obr.repository.location" location="${obr.repository.path}/${obr.repository.filename}"/>
+        <echo message="* Creating package index for '${pathlist}'"/>
+        <echo message="* Creating package index at '${obr.repository.location}'"/>
+        <echo message="Bindex working directory: ${obr.repository.path}"/>
+        <java jar="${pulsar.dir}/lib/tools/bindex-preR5.jar" dir="${obr.repository.path}" fork="true">
+            <arg line="-v '${pathlist}' -r '${obr.repository.location}'"/>
+        </java>
+    </target>
+
+</project>

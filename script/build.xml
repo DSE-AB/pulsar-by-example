@@ -1,0 +1,138 @@
+<project name="master-build" default="dist-all" basedir="..">
+    <description>
+        Master build script.
+    </description>
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="lib/tools/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <property name="report.dir" location="reports"/>
+    <property name="dist.dir" location="dist"/>
+
+    <path id="all-sub-build-files">
+        <fileset dir="examples">
+            <include name="**/script/build.xml"/>
+        </fileset>
+        <fileset dir="dev-tools">
+            <include name="**/script/build.xml"/>
+        </fileset>
+    </path>
+
+    <target name="dist-all" description="Dist all modules recursively">
+        <subant target="dist" failonerror="true">
+            <property name="obr.postpone.build" value="true"/>
+            <path refid="all-sub-build-files"/>
+        </subant>
+        <antcall target="-build-repository"/>
+    </target>
+
+    <target name="test-all" description="Test all modules recursively">
+        <subant target="test" failonerror="true">
+            <property name="obr.postpone.build" value="true"/>
+            <path refid="all-sub-build-files"/>
+        </subant>
+
+        <mkdir dir="${report.dir}"/>
+        <junitreport todir="${report.dir}">
+            <fileset dir="product">
+                <include name="**/reports/TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${report.dir}/html"/>
+        </junitreport>
+    </target>
+
+    <target name="compile-all">
+        <subant target="compile" failonerror="true">
+            <property name="obr.postpone.build" value="true"/>
+            <path refid="all-sub-build-files"/>
+        </subant>
+    </target>
+
+
+    <target name="clean-all" depends="clean" description="Clean all modules recursively">
+        <subant target="clean" failonerror="true">
+            <path refid="all-sub-build-files"/>
+        </subant>
+    </target>
+
+    <target name="clean">
+        <delete dir="${report.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="clean-runtime" description="Clear Pulsar runtime state and reinstall on next run/debug">
+        <echo message="* Removing runtime directory"/>
+        <delete dir="pulsar/.pulsar-runtime" failonerror="true"/>
+    </target>
+
+    <target name="reset-workspace" description="Resets the IDEA workspace configuration">
+        <input message="Are you sure you want to reset you IDEA workspace configuration and remove all your editor customizations (Yes/No)?"
+               validargs="No,Yes" addproperty="do.reset"/>
+        <condition property="do.abort">
+            <equals arg1="No" arg2="${do.reset}"/>
+        </condition>
+        <fail if="do.abort">Reset workspace aborted.</fail>
+        <echoxml file=".idea/workspace.xml">
+            <project version="4">
+                <component name="antWorkspaceConfiguration">
+                    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+                    <option name="FILTER_TARGETS" value="true" />
+                </component>
+            </project>
+        </echoxml>
+        <touch file=".idea-conf/LEB-System.iml"/>
+    </target>
+
+    <!-- repository build tasks -->
+
+    <target name="-build-repository" depends="-build-obr-repository"/>
+
+    <target name="-build-obr-repository">
+        <tempfile property="temp.file" deleteonexit="true" prefix="build.properties" suffix=".tmp"/>
+        <copy tofile="${temp.file}" file="script/build.properties"/>
+        <replace file="${temp.file}" token="file://" value=""/>
+        <replace file="${temp.file}" token="~" value="${user.home}"/>
+        <replace file="${temp.file}" token="\" value="/"/>
+        <loadproperties srcFile="${temp.file}" prefix="build."/>
+
+        <dirname property="obr.repository.path" file="${build.obr.repository.destination}"/>
+        <basename property="obr.repository.filename" file="${build.obr.repository.destination}"/>
+
+        <condition property="obr.repository.instance"
+                   value="${obr.repository.path}/${obr.repository.urlprefix}"
+                   else="${obr.repository.path}">
+            <isset property="obr.repository.urlprefix"/>
+        </condition>
+
+        <fileset dir="." id="project.fileset">
+            <include name="**/dist/*.jar"/>
+            <exclude name="**/depend/dist/*.jar"/>
+            <exclude name="pulsar/**/*.jar"/>
+        </fileset>
+
+        <echo message="* Building repository (using references to project files)"/>
+        <antcall target="-build-obr">
+            <reference refid="project.fileset" torefid="obr.fileset"/>
+        </antcall>
+    </target>
+
+    <target name="-build-obr">
+        <pathconvert refid="obr.fileset" property="pathlist" pathsep="' '">
+            <map from="${obr.repository.path}/" to=""/><!-- makes paths relative to repository directory -->
+        </pathconvert>
+        <echo message="Repository content to index: '${pathlist}'"/>
+        <property name="obr.repository.location" location="${obr.repository.instance}/${obr.repository.filename}"/>
+        <echo message="Creating repository index: ${obr.repository.location}"/>
+        <echo message="Bindex working directory: ${obr.repository.path}"/>
+        <mkdir dir="${obr.repository.instance}"/>
+        <mkdir dir="${obr.repository.path}"/>
+        <java jar="lib/tools/bindex-preR5.jar" dir="${obr.repository.path}" fork="true">
+            <arg line="-v '${pathlist}' -r '${obr.repository.location}'"/>
+        </java>
+    </target>
+
+
+</project>

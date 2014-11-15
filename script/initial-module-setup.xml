@@ -1,0 +1,150 @@
+<project name="initial-workspace-setup" basedir="..">
+    <description>
+        Temporary script to initially create all (pulsar) modules
+    </description>
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+        <classpath>
+            <pathelement location="lib/tools/ant-contrib-1.0b3.jar"/>
+        </classpath>
+    </taskdef>
+
+    <property name="encoding" value="UTF-8"/>
+
+    <macrodef name="create-module" taskname="a">
+        <attribute name="symbolicName"/>
+        <attribute name="dir"/>
+        <attribute name="package"/>
+        <sequential>
+            <local name="module.symbolic.name"/>
+            <property name="module.symbolic.name" value="@{symbolicName}"/>
+
+            <local name="module.dir.name"/>
+            <property name="module.dir.name" value="@{dir}"/>
+
+            <local name="module.package.base"/>
+            <property name="module.package.base" value="@{package}"/>
+
+            <local name="module.dir"/>
+            <property name="module.dir" location="${module.dir.name}"/>
+
+            <local name="module.package.base.dir"/>
+            <propertyregex property="module.package.base.dir" input="${module.package.base}" regexp="\." replace="/" global="true"/>
+
+            <local name="module.package.location"/>
+            <property name="module.package.location" location="${module.dir}/src/${module.package.base.dir}"/>
+
+            <mkdir dir="${module.dir}/conf"/>
+            <echo file="${module.dir}/conf/${module.symbolic.name}.conf" encoding="UTF-8">
+# Configuration for ${module.symbolic.name}
+DummyParameter = value
+# description: parameter description here
+            </echo>
+
+            <mkdir dir="${module.dir}/lib"/>
+            <mkdir dir="${module.dir}/lib/exported"/>
+            <touch file="${module.dir}/lib/exported/.gitignore"/>
+            <mkdir dir="${module.dir}/lib/internal"/>
+            <touch file="${module.dir}/lib/internal/.gitignore"/>
+
+            <mkdir dir="${module.dir}/resources"/>
+            <mkdir dir="${module.dir}/src"/>
+            <mkdir dir="${module.dir}/src-test"/>
+            <touch file="${module.dir}/src-test/.gitignore"/>
+
+            <mkdir dir="${module.package.location}"/>
+            <echo file="${module.package.location}/package-info.java" encoding="${encoding}">
+@PulsarModule(symbolicName ="${module.symbolic.name}", version="1.0.0")
+package ${module.package.base};
+
+import se.dse.pulsar.core.api.PulsarModule;
+            </echo>
+            <echo file="${module.package.location}/Activator.java" encoding="${encoding}">
+package ${module.package.base};
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import se.dse.pulsar.core.api.*;
+import se.dse.pulsar.module.configmanager.api.Config;
+
+public class Activator extends PulsarActivator {
+    private final static Logger logger = LoggerFactory.getLogger(Activator.class);
+    private Config config;
+
+    @Override
+    public void init(ModuleContextBuilder i_moduleContextBuilder) {
+        config = lookupService(Config.class);
+    }
+}
+            </echo>
+
+            <mkdir dir="${module.package.location}/api"/>
+            <echo file="${module.package.location}/api/package-info.java" encoding="${encoding}">
+@Version("1.0.0")
+package ${module.package.base}.api;
+
+import aQute.bnd.annotation.Version;
+            </echo>
+
+            <mkdir dir="${module.dir}/script"/>
+            <local name="relative.pulsar.script.dir"/>
+            <property name="relative.pulsar.script.dir" basedir="${module.dir}/script" location="script" relative="yes"/>
+            <local name="relative.pulsar.dir"/>
+            <property name="relative.pulsar.dir" basedir="${module.dir}" location="pulsar" relative="yes"/>
+            <echoxml file="${module.dir}/script/build.xml" append="false">
+<project name="leb-portal" default="dist" basedir="..">
+    <import file="${relative.pulsar.script.dir}/build.macro.xml"/>
+    <pulsar-module
+            dir="."
+            pulsar.dir="${relative.pulsar.dir}"
+            />
+</project>
+            </echoxml>
+
+            <local name="module.basedir.name"/>
+            <basename property="module.basedir.name" file="${module.dir}"/>
+            <echoxml file="${module.dir}/${module.basedir.name}.iml" append="false" >
+<module type="JAVA_MODULE" version="4">
+    <component name="NewModuleRootManager" inherit-compiler-output="false">
+        <output url="file://$MODULE_DIR$/classes" />
+        <output-test url="file://$MODULE_DIR$/classes-test" />
+        <exclude-output />
+        <content url="file://$MODULE_DIR$">
+            <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+            <sourceFolder url="file://$MODULE_DIR$/src-test" isTestSource="true" />
+            <excludeFolder url="file://$MODULE_DIR$/classes" />
+            <excludeFolder url="file://$MODULE_DIR$/classes-test" />
+        </content>
+        <orderEntry type="inheritedJdk" />
+        <orderEntry type="sourceFolder" forTests="false" />
+        <orderEntry type="library" name="pulsar.devel.compile" level="project" />
+    </component>
+</module>
+            </echoxml>
+
+
+        </sequential>
+    </macrodef>
+
+    <target name="recreate-modules" description="Recreate all modules">
+
+        <input message="Are you sure you want to recreate all module definitions, overwriting current module definition files (Yes/No)?"
+               validargs="No,Yes" addproperty="do.reset"/>
+        <condition property="do.abort">
+            <equals arg1="No" arg2="${do.reset}"/>
+        </condition>
+        <fail if="do.abort">Aborted.</fail>
+
+        <!-- create example modules -->
+        <property name="examples.dir" location="examples"/>
+
+        <create-module dir="${examples.dir}/hello-modules"  symbolicName="pulsarbyexample.hellomodules"       package="se.dse.pulsarbyexample.hellomodules"/>
+
+        <!-- create dev-tools modules -->
+        <property name="dev-tools.dir" location="dev-tools"/>
+
+        <create-module dir="${dev-tools.dir}/pulsar-shell"               symbolicName="pulsar.devtools.shell"               package="se.dse.pulsar.devtools.shell"/>
+
+    </target>
+
+</project>
