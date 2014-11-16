@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea-conf/pulsar.iml" filepath="$PROJECT_DIR$/.idea-conf/pulsar.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea-conf/pulsar-by-example.iml" filepath="$PROJECT_DIR$/.idea-conf/pulsar-by-example.iml" />
       <module fileurl="file://$PROJECT_DIR$/dev-tools/pulsar-shell/pulsar-shell.iml" filepath="$PROJECT_DIR$/dev-tools/pulsar-shell/pulsar-shell.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dev-tools/pulsar-wiki/pulsar-wiki.iml" filepath="$PROJECT_DIR$/dev-tools/pulsar-wiki/pulsar-wiki.iml" />
     </modules>
   </component>
 </project>

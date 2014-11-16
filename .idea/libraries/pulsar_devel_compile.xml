@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="pulsar.devel.compile">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/pulsar/lib-devel/compile" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/pulsar/lib-devel/compile" />
+    </SOURCES>
+    <jarDirectory url="file://$PROJECT_DIR$/pulsar/lib-devel/compile" recursive="false" />
+    <jarDirectory url="file://$PROJECT_DIR$/pulsar/lib-devel/compile" recursive="false" type="SOURCES" />
+  </library>
+</component>

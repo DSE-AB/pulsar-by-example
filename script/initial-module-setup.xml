@@ -138,12 +138,13 @@ import aQute.bnd.annotation.Version;
         <!-- create example modules -->
         <property name="examples.dir" location="examples"/>
 
-        <create-module dir="${examples.dir}/hello-modules"  symbolicName="pulsarbyexample.hellomodules"       package="se.dse.pulsarbyexample.hellomodules"/>
+        <!--create-module dir="${examples.dir}/hello-modules"  symbolicName="pulsarbyexample.hellomodules"       package="se.dse.pulsarbyexample.hellomodules"/-->
 
         <!-- create dev-tools modules -->
         <property name="dev-tools.dir" location="dev-tools"/>
 
-        <create-module dir="${dev-tools.dir}/pulsar-shell"               symbolicName="pulsar.devtools.shell"               package="se.dse.pulsar.devtools.shell"/>
+        <!--create-module dir="${dev-tools.dir}/pulsar-shell"               symbolicName="pulsar.devtools.shell"               package="se.dse.pulsar.devtools.shell"/-->
+        <create-module dir="${dev-tools.dir}/pulsar-wiki"               symbolicName="pulsar.devtools.wiki"               package="se.dse.pulsar.devtools.wiki"/>
 
     </target>
 

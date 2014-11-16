@@ -13,6 +13,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="pulsar.devel.compile" level="project" />
+    <orderEntry type="library" name="pulsar.launcher-link" level="project" />
+    <orderEntry type="library" name="pulsar-dev" level="project" />
   </component>
 </module>
 

@@ -76,7 +76,7 @@
 
     </target>
 
-    <target name="-unpack">
+    <target name="-unpack" description="unpack">
 
         <delete dir="${lib-devel.dir}/compile"/>
         <delete dir="${lib-devel.dir}/dist"/>
@@ -135,6 +135,8 @@
             <patternset>
                 <include name="**/servlet-api-*.jar"/>
                 <include name="**/geronimo-javamail_1.4_spec-*.jar"/>
+                <include name="**/org.apache.felix.gogo.*.jar"/>
+                <include name="**/org.apache.servicemix.specs.jsr339-api-*.jar"/>
             </patternset>
             <flattenmapper/>
         </unzip>
