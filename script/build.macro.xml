@@ -2,7 +2,7 @@
   ~ Copyright (c) 2013. Deneb Software Engineering AB. All rights reserved.
   -->
 
-<project name="module">
+<project name="module" basedir="..">
 
     <macrodef name="pulsar-module">
         <attribute name="pulsar.dir"/>
@@ -21,7 +21,7 @@
 
             <taskdef resource="net/sf/antcontrib/antcontrib.properties">
                 <classpath>
-                    <pathelement location="lib/tools/ant-contrib-1.0b3.jar"/>
+                    <pathelement location="@{pulsar.dir}/../lib/tools/ant-contrib-1.0b3.jar"/>
                 </classpath>
             </taskdef>
 

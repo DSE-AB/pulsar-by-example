@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2014. Deneb Software Engineering AB. All rights reserved.
+  -->
+
+<resources>
+    <resourcegroup name="administrator">
+    </resourcegroup>
+
+    <resourcegroup name="anonymous">
+    </resourcegroup>
+
+    <resourcegroup name="everyone">
+        <template path="chatter.html"/>
+        <method path="se.dse.pulsarbyexample.chatter.htmlui.api.ChatterHtmlUI/login"/>
+        <method path="se.dse.pulsarbyexample.chatter.htmlui.api.ChatterHtmlUI/getChatter"/>
+        <method path="se.dse.pulsarbyexample.chatter.htmlui.api.ChatterHtmlUI/say"/>
+        <static path="**"/>
+    </resourcegroup>
+
+    <resourcegroup name="identified">
+    </resourcegroup>
+</resources>

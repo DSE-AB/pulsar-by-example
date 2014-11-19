@@ -23,7 +23,7 @@ public interface ChatterServer {
     void chat(String i_loginToken, String i_message) throws ChatterException;
 
     /**
-     * Retrieve a list of chat messages ordered according to timestamp, oldest first.
+     * Retrieve a list of chat messages ordered according to timestamp, newest first.
      * @param i_sinceTimeStamp Only retrieve messages after this timestamp. Use 0 to get all messages.
      * @param i_maxCount Maximum number of messages to return
      * @return A list of messages.

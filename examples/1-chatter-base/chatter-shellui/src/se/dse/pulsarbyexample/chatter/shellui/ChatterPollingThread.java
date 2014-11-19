@@ -34,7 +34,7 @@ public class ChatterPollingThread extends Thread {
                     List<ChatterMessage> l_newMessages = chatterServer.getChatter(lastChatterTimeStamp, Integer.MAX_VALUE);
                     if (!l_newMessages.isEmpty()) {
                         printChatter(l_newMessages);
-                        lastChatterTimeStamp = l_newMessages.get(l_newMessages.size() - 1).getTimestamp();
+                        lastChatterTimeStamp = l_newMessages.get(0).getTimestamp();
                     }
                 } catch (ServiceUnavailableException ignore) {}
                 Thread.sleep(pollFrequencyMS);

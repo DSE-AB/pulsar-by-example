@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir=".." default="dist" name="leb-portal">
+<project basedir=".." default="dist" name="2-chatter-html.chatter-htmlui">
   <import file="../../../../script/build.macro.xml" />
-  <pulsar-module dir="." pulsar.dir="../../../pulsar" />
+  <pulsar-module dir="." pulsar.dir="../../../pulsar"
+          dependencies-compile="../examples/1-chatter-base/chatter-api"/>
 </project>

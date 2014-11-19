@@ -1,0 +1,34 @@
+<html>
+<head>
+    <script type="text/javascript" src="/pulsar/js?module=pulsarbyexample.chatter.htmlui"></script>
+    <script type="text/javascript">
+        document.observe("dom:loaded", function() {
+            setInterval(function() {reloadPulsarTag("chatterTag")}, 1000);
+        });
+    </script>
+</head>
+<body>
+
+<div>
+    <form name="loginform" action="/pulsar/pulsarbyexample.chatter.htmlui/se.dse.pulsarbyexample.chatter.htmlui.api.ChatterHtmlUI/login" method="post">
+        <label for="i_userName">Chat name:</label>
+        <input id="i_userName" type="text" name="i_userName">
+        <input type="hidden" name="redirect" value="/pulsar/pulsarbyexample.chatter.htmlui/chatter.html"/>
+        <input type="submit" value="Login">
+    </form>
+</div>
+
+<div>
+    <form name="chatform" action="/pulsar/pulsarbyexample.chatter.htmlui/se.dse.pulsarbyexample.chatter.htmlui.api.ChatterHtmlUI/say" method="post">
+        <label for="i_message">Message:</label>
+        <input id="i_message" type="text" name="i_message">
+        <input type="hidden" name="redirect" value="/pulsar/pulsarbyexample.chatter.htmlui/chatter.html"/>
+        <input type="submit" value="Say">
+    </form>
+</div>
+
+<div>
+<pulsar:method id="chatterTag" service="se.dse.pulsarbyexample.chatter.htmlui.api.ChatterHtmlUI" method="getChatter" stylesheet="chatter.xsl"/>
+</div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Copyright (c) 2014. Deneb Software Engineering AB. All rights reserved.
+  -->
+
+<permissions>
+
+    <grant>
+        <resourcegroup name="administrator"/>
+        <group plugin="pulsar" id="administrators"/>
+    </grant>
+
+    <grant>
+        <resourcegroup name="anonymous"/>
+        <group plugin="pulsar" id="anonymous"/>
+    </grant>
+
+    <grant>
+        <resourcegroup name="everyone"/>
+        <group plugin="pulsar" id="everyone"/>
+    </grant>
+
+    <grant>
+        <resourcegroup name="identified"/>
+        <group plugin="pulsar" id="identified"/>
+    </grant>
+
+</permissions>

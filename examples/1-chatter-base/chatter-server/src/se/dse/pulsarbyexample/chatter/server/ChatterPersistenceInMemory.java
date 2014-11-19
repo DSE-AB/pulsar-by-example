@@ -9,44 +9,43 @@ import java.util.*;
 @Singleton
 public class ChatterPersistenceInMemory implements ChatterPersistence {
 
-    private final List<ChatterMessage> chatterMessages = new LinkedList<>();
+    private final LinkedList<ChatterMessage> chatterMessages = new LinkedList<>();
 
     private final Comparator<ChatterMessage> chatterComparator = new Comparator<ChatterMessage>() {
         @Override
         public int compare(ChatterMessage o1, ChatterMessage o2) {
-            return (int)(o1.getTimestamp()-o2.getTimestamp());
+            return (int)(o2.getTimestamp()-o1.getTimestamp());
         }
     };
 
 
     @Override
     public synchronized void storeChatter(ChatterMessage i_chatterMessage) {
-        chatterMessages.add(i_chatterMessage);
-        Collections.sort(chatterMessages, chatterComparator); // keep the chatter sorted
+        chatterMessages.addFirst(i_chatterMessage);
+        Collections.sort(chatterMessages, chatterComparator); // keep the chatter sorted, newest first
     }
 
     @Override
     public synchronized List<ChatterMessage> loadChatter(long i_chatterTimeStamp, int i_maxSize) {
 
-        int l_totalChatterSize = chatterMessages.size();
-        int l_startChatterIndex = getNextChatterIndex(i_chatterTimeStamp);
-        int l_resultSize = Math.min(l_totalChatterSize - l_startChatterIndex, i_maxSize);
+        int l_timestampIndex = getIndexFromTimeStamp(i_chatterTimeStamp);
+        int l_resultIndex = Math.min(l_timestampIndex, i_maxSize);
 
-        if (l_resultSize > 0) {
-            ChatterMessage[] l_result = new ChatterMessage[l_resultSize];
-            l_result = chatterMessages.subList(l_startChatterIndex, l_startChatterIndex + l_resultSize).toArray(l_result);
+        if (l_resultIndex > 0) {
+            ChatterMessage[] l_result = new ChatterMessage[l_resultIndex];
+            l_result = chatterMessages.subList(0, l_resultIndex).toArray(l_result);
             return Arrays.asList(l_result);
         } else {
             return Collections.emptyList();
         }
     }
 
-    private int getNextChatterIndex(long i_chatterTimeStamp) {
+    private int getIndexFromTimeStamp(long i_chatterTimeStamp) {
+        if (chatterMessages.isEmpty() || chatterMessages.getFirst().getTimestamp() <= i_chatterTimeStamp) return 0;
         for (int i=0; i<chatterMessages.size(); i++) {
-            if (i_chatterTimeStamp < chatterMessages.get(i).getTimestamp()) {
-                return i;
-            }
+            if (chatterMessages.get(i).getTimestamp() <= i_chatterTimeStamp) return i;
         }
         return chatterMessages.size();
+
     }
 }
