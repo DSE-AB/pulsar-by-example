@@ -27,6 +27,13 @@
 
             <local name="module.dir"/>
             <property name="module.dir" location="${module.dir.name}"/>
+            <!--fail message="The directory '${module.dir}' already exits">
+                <condition>
+                    <not>
+                        <available file="${module.dir}" type="dir" />
+                    </not>
+                </condition>
+            </fail-->
 
             <local name="module.package.base.dir"/>
             <propertyregex property="module.package.base.dir" input="${module.package.base}" regexp="\." replace="/" global="true"/>
@@ -126,7 +133,24 @@ import aQute.bnd.annotation.Version;
         </sequential>
     </macrodef>
 
-    <target name="recreate-modules" description="Recreate all modules">
+    <target name="recreate-devtools-modules" description="Recreate all dev-tools modules">
+
+        <input message="Are you sure you want to recreate all module definitions, overwriting current module definition files (Yes/No)?"
+               validargs="No,Yes" addproperty="do.reset"/>
+        <condition property="do.abort">
+            <equals arg1="No" arg2="${do.reset}"/>
+        </condition>
+        <fail if="do.abort">Aborted.</fail>
+
+        <!-- create dev-tools modules -->
+        <property name="dev-tools.dir" location="dev-tools"/>
+
+        <create-module dir="${dev-tools.dir}/pulsar-shell"              symbolicName="pulsar.devtools.shell"              package="se.dse.pulsar.devtools.shell"/>
+        <create-module dir="${dev-tools.dir}/pulsar-wiki"               symbolicName="pulsar.devtools.wiki"               package="se.dse.pulsar.devtools.wiki"/>
+
+    </target>
+
+    <target name="recreate-examplemodules" description="Recreate all example modules">
 
         <input message="Are you sure you want to recreate all module definitions, overwriting current module definition files (Yes/No)?"
                validargs="No,Yes" addproperty="do.reset"/>
@@ -138,13 +162,19 @@ import aQute.bnd.annotation.Version;
         <!-- create example modules -->
         <property name="examples.dir" location="examples"/>
 
-        <!--create-module dir="${examples.dir}/hello-modules"  symbolicName="pulsarbyexample.hellomodules"       package="se.dse.pulsarbyexample.hellomodules"/-->
+        <!-- example 1 -->
+        <create-module dir="${examples.dir}/1-chatter-base/chatter-api"           symbolicName="pulsarbyexample.chatter.api"           package="se.dse.pulsarbyexample.chatter"/>
+        <create-module dir="${examples.dir}/1-chatter-base/chatter-server"        symbolicName="pulsarbyexample.chatter.server"        package="se.dse.pulsarbyexample.chatter.server"/>
+        <create-module dir="${examples.dir}/1-chatter-base/chatter-shellui"       symbolicName="pulsarbyexample.chatter.shellui"       package="se.dse.pulsarbyexample.chatter.shellui"/>
 
-        <!-- create dev-tools modules -->
-        <property name="dev-tools.dir" location="dev-tools"/>
+        <!-- example 2 -->
+        <create-module dir="${examples.dir}/2-chatter-html/chatter-htmlui"        symbolicName="pulsarbyexample.chatter.htmlui"        package="se.dse.pulsarbyexample.chatter.htmlui"/>
 
-        <!--create-module dir="${dev-tools.dir}/pulsar-shell"               symbolicName="pulsar.devtools.shell"               package="se.dse.pulsar.devtools.shell"/-->
-        <create-module dir="${dev-tools.dir}/pulsar-wiki"               symbolicName="pulsar.devtools.wiki"               package="se.dse.pulsar.devtools.wiki"/>
+        <!-- example 3 -->
+        <create-module dir="${examples.dir}/3-chatter-spa/chatter-spaui"          symbolicName="pulsarbyexample.chatter.spaui"         package="se.dse.pulsarbyexample.chatter.spaui"/>
+
+        <!-- example 4 -->
+        <create-module dir="${examples.dir}/4-chatter-persistence/chatter-store"  symbolicName="pulsarbyexample.chatter.store"         package="se.dse.pulsarbyexample.chatter.store"/>
 
     </target>
 

@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/examples/hello-modules/hello-modules.iml" filepath="$PROJECT_DIR$/examples/hello-modules/hello-modules.iml" />
+      <module fileurl="file://$PROJECT_DIR$/examples/1-chatter-base/chatter-api/chatter-api.iml" filepath="$PROJECT_DIR$/examples/1-chatter-base/chatter-api/chatter-api.iml" group="1-chatter-base" />
+      <module fileurl="file://$PROJECT_DIR$/examples/2-chatter-html/chatter-htmlui/chatter-htmlui.iml" filepath="$PROJECT_DIR$/examples/2-chatter-html/chatter-htmlui/chatter-htmlui.iml" group="2-chatter-html" />
+      <module fileurl="file://$PROJECT_DIR$/examples/1-chatter-base/chatter-server/chatter-server.iml" filepath="$PROJECT_DIR$/examples/1-chatter-base/chatter-server/chatter-server.iml" group="1-chatter-base" />
+      <module fileurl="file://$PROJECT_DIR$/examples/1-chatter-base/chatter-shellui/chatter-shellui.iml" filepath="$PROJECT_DIR$/examples/1-chatter-base/chatter-shellui/chatter-shellui.iml" group="1-chatter-base" />
+      <module fileurl="file://$PROJECT_DIR$/examples/3-chatter-spa/chatter-spaui/chatter-spaui.iml" filepath="$PROJECT_DIR$/examples/3-chatter-spa/chatter-spaui/chatter-spaui.iml" group="3-chatter-spa" />
+      <module fileurl="file://$PROJECT_DIR$/examples/4-chatter-persistence/chatter-store/chatter-store.iml" filepath="$PROJECT_DIR$/examples/4-chatter-persistence/chatter-store/chatter-store.iml" group="4-chatter-persistence" />
       <module fileurl="file://$PROJECT_DIR$/.idea-conf/pulsar.iml" filepath="$PROJECT_DIR$/.idea-conf/pulsar.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea-conf/pulsar-by-example.iml" filepath="$PROJECT_DIR$/.idea-conf/pulsar-by-example.iml" />
       <module fileurl="file://$PROJECT_DIR$/dev-tools/pulsar-shell/pulsar-shell.iml" filepath="$PROJECT_DIR$/dev-tools/pulsar-shell/pulsar-shell.iml" />
