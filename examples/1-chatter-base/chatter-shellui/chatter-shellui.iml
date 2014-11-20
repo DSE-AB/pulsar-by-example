@@ -12,7 +12,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="pulsar.devel.compile" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="pulsar.devel.compile" level="project" />
     <orderEntry type="module" module-name="chatter-api" />
     <orderEntry type="module-library">
       <library>
