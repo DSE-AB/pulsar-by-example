@@ -6,6 +6,7 @@
 
 <resources>
     <resourcegroup name="everyone">
+        <template path="**"/>
         <static path="**"/>
     </resourcegroup>
 </resources>

@@ -1,6 +1,7 @@
 package se.dse.pulsar.devtools.wiki;
 
 import org.markdown4j.Markdown4jProcessor;
+import org.markdown4j.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.dse.pulsar.core.api.PulsarModuleContext;
@@ -25,6 +26,7 @@ public class WikiExtender implements PulsarModuleExtender {
     private final Map<String, IndexedModule> index = Collections.synchronizedMap(new HashMap<String, IndexedModule>());
     private final ResourceManager resourceManager;
     private final ModuleManager moduleManager;
+    private final Plugin[] plugins;
 
     private class IndexedModule {
         final PulsarModuleRef moduleRef;
@@ -35,9 +37,10 @@ public class WikiExtender implements PulsarModuleExtender {
     }
 
     @Inject
-    public WikiExtender(ResourceManager i_resourceManager, ModuleManager i_moduleManager) {
+    public WikiExtender(ResourceManager i_resourceManager, ModuleManager i_moduleManager, Plugin[] i_plugins) {
         resourceManager = i_resourceManager;
         moduleManager = i_moduleManager;
+        plugins = i_plugins;
     }
 
     @Override
@@ -97,7 +100,7 @@ public class WikiExtender implements PulsarModuleExtender {
         if (i_page.endsWith(".md")) {
             StringBuilder l_stringBuilder = new StringBuilder();
             l_stringBuilder.append("<html><head><link rel='stylesheet' href='/pulsar/wiki/html/css/markdown.css'/></head><body>");
-            l_stringBuilder.append((new Markdown4jProcessor().process(i_resourceAsString)));
+            l_stringBuilder.append((new Markdown4jProcessor().registerPlugins(plugins).process(i_resourceAsString)));
             l_stringBuilder.append("<body></html>");
             return l_stringBuilder.toString();
         } else {

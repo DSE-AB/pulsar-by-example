@@ -1,16 +1,22 @@
 
 package se.dse.pulsar.devtools.wiki;
 
+import org.markdown4j.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import se.dse.pulsar.core.api.*;
 import se.dse.pulsar.devtools.wiki.api.Wiki;
+import se.dse.pulsar.devtools.wiki.plugins.PrettifyPlugin;
+import se.dse.pulsar.devtools.wiki.plugins.SourceReferencePlugin;
+import se.dse.pulsar.devtools.wiki.plugins.SyntaxHighlighterPlugin;
+import se.dse.pulsar.launcher.exported.Constants;
 import se.dse.pulsar.module.clientaccess.api.configurators.RSConfiguratorFactory;
 import se.dse.pulsar.module.configmanager.api.Config;
 import se.dse.pulsar.module.modulemanager.api.ModuleManager;
 import se.dse.pulsar.module.resourcemanager.api.ResourceManager;
 
 import javax.inject.Inject;
+import java.io.File;
 
 public class WikiActivator extends PulsarActivator {
     private final static Logger logger = LoggerFactory.getLogger(WikiActivator.class);
@@ -31,6 +37,13 @@ public class WikiActivator extends PulsarActivator {
 
         i_moduleContextBuilder.consume(ResourceManager.class);
         i_moduleContextBuilder.consume(ModuleManager.class);
+
+        File l_pulsarRootDir = new File(System.getProperty(Constants.PULSAR_ROOT_DIR_PROPERTY));
+        i_moduleContextBuilder.bindLocal(Plugin[].class).usingInstance(new Plugin[] {
+                new SourceReferencePlugin(l_pulsarRootDir),
+                new SyntaxHighlighterPlugin(l_pulsarRootDir),
+                new PrettifyPlugin(l_pulsarRootDir)
+        });
 
     }
 

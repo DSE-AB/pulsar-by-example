@@ -1,6 +1,5 @@
 package se.dse.pulsar.devtools.wiki.api;
 
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
