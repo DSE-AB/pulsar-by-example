@@ -37,7 +37,7 @@ select `Open Project` from the splash menu (or choose `Open...` from the file me
 ### Running the examples
 * Start the ´Pulsar (developer)` Run Configuration in Intellij
 * When the ´AdminConsole´ opens click the ´Install´ tab and install the ´pulsar.devtools.wiki´ module
-* When the module is installed navigate you browser to the page [`/pulsar/wiki/pbe.html`](http://localhost:8080/pulsar/wiki/pbe.html)
+* When the module is installed navigate you browser to the page [`/pulsar/wiki/index.html`](http://localhost:8080/pulsar/wiki/index.html) (The default port for Pulsar is 8080, if that is not available Pulsar will use 8081 instead.) 
 
     
 Project Structure

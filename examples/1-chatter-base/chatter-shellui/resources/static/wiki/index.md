@@ -23,7 +23,7 @@ The shell implements who commands `login '<name>'` and `say '<message>'`
     13:58:45 [pulsarbyexample.chatter.shellui:run] DEBUG s.d.p.c.server.ChatterServerImpl - [login] Roy is logging in
     chattershell> say Hello
     chattershell> 
-	    Roy > 'Hell
+	    Roy > `Hello`
 
 
 ## References

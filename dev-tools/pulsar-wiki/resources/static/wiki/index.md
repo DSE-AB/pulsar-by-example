@@ -1,60 +1,24 @@
-%% syntaxHighlight install=true
-Content
-%%
+Pulsar by Example
+=================
 
-%%% prettify install=true
-Content
-%%%
+Welcome
+-------
+Welcome to the Pulsar by Example collection. The purpose of this workspace is to exemplify how a modular architecture can be achieved with the Pulsar application server. Together the example modules form a very simple chat service called `Chatter`. 
 
-# The Pulsar Wiki Service
-[Another page](somepage.md)
-[Code Example 1](code/example-1.md)
-Hey!
+### Example groups
+The example collection consist of four module groups:
+1. chatter-base - Here we create an API for the `Chatter` service in the `chatter-api` module, we implement the API in a `chatter-server` module. Finally we also create a command line client UI called `chatter-shellui` which uses the API to communicate with the server module.
+2. chatter-html - The second level adds a very simple HTML UI which also comunicates with the server.
+3. chatter-spa - In the third level we build a Single Page Application which communicated with the server using a REST version of the API. *TBD*
+4. chatter-persistence - Finally we add database persistence for the chat history using an in memory database.
 
-# Tests
-
-## sourceRef Plugin
-%%% sourceRef file=../dev-tools/pulsar-wiki/src/se/dse/pulsar/devtools/wiki/api/Wiki.java
-.
-%%%
-
-# syntaxHighlight
-%%% syntaxHighlight brush=js file=../dev-tools/pulsar-wiki/src/se/dse/pulsar/devtools/wiki/api/Wiki.java
-MyPlugInIdContent
-...
-...
-%%%
-
-# prettify
-%%% prettify lang=java linenums=true file=../dev-tools/pulsar-wiki/src/se/dse/pulsar/devtools/wiki/api/Wiki.java
-...
-%%%
-# prettify
-%%% prettify lang=java mark=2 linenums=true title="The GET method in wiki/Wiki.java" file=../dev-tools/pulsar-wiki/src/se/dse/pulsar/devtools/wiki/api/Wiki.java
-...
-%%%
-
-# Include
-{{include src="https://raw.github.com/vmg/redcarpet/4c14d0875163890e553897efcceb7480aa34f8e9/README.markdown"}}
-
-
-## UML
-%% yuml style=nofunky scale=120 format=svg
-[Customer]<>-orders*>[Order] 
-[Order]++-0..*>[LineItem]
-[Order]-[note:Aggregate root.]
-[Car]<0..*-0..*>[Elefant]
-%%
-
-## Sequence
-%% sequence style=modern-blue
-title Authentication Sequence
-
-Alice->Bob: Authentication Request
-note right of Bob: Bob thinks about it
-Bob->Alice: Authentication Response
-%%
+### Getting started
+Start with installing the `chatter-api` using the `AdminConsole/Install` and then go to [the documentation for that module](/pulsar/rs/se.dse.pulsar.devtools.wiki.api.Wiki/index/pulsarbyexample.chatter.api/).
 
 ## References
+### Licenses used
 * [markdown4j](https://code.google.com/p/markdown4j/) distributed under [The BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause)
 * [google-code-prettify](https://code.google.com/p/google-code-prettify/) distributed under [Apache License, V2](http://www.apache.org/licenses/LICENSE-2.0)
+
+## Links
+* [Wiki top](/pulsar/rs/se.dse.pulsar.devtools.wiki.api.Wiki/index)
