@@ -13,4 +13,4 @@ The example collection consist of four module groups:
 4. chatter-persistence - Finally we add database persistence for the chat history using an in memory database.
 
 ### Getting started
-Start with installing the `chatter-api` using the `AdminConsole/Install` and then go to (the documentation for that module)[/pulsar/rs/se.dse.pulsar.devtools.wiki.api.Wiki/index/pulsarbyexample.chatter.api/].
+Start with installing the `chatter-api` using the `AdminConsole/Install` and then go to [the documentation for that module](/pulsar/rs/se.dse.pulsar.devtools.wiki.api.Wiki/index/pulsarbyexample.chatter.api/).
