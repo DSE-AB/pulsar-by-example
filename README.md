@@ -35,6 +35,7 @@ may take som time to complete.*
 select `Open Project` from the splash menu (or choose `Open...` from the file menu) and navigate to select the directory.*
 
 ### Running the examples
+* First you need to build the examples, the simplest way is to use the Ant build script `master-build/dist-all` which will compile and package (dist) all the example modules.
 * Start the ´Pulsar (developer)` Run Configuration in Intellij
 * When the ´AdminConsole´ opens click the ´Install´ tab and install the ´pulsar.devtools.wiki´ module
 * When the module is installed navigate you browser to the page [`/pulsar/wiki/index.html`](http://localhost:8080/pulsar/wiki/index.html) (The default port for Pulsar is 8080, if that is not available Pulsar will use 8081 instead.) 
