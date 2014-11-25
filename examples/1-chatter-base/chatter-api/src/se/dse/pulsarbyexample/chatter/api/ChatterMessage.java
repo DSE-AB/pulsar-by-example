@@ -26,9 +26,13 @@ public final class ChatterMessage {
 
 
     public ChatterMessage(long i_timestamp, String i_content, String i_userId) {
+        this(UUID.randomUUID().toString(), i_timestamp, i_content, i_userId);
+    }
+
+    public ChatterMessage(String i_id, long i_timestamp, String i_content, String i_userId) {
         timestamp = i_timestamp;
         content = i_content;
-        id = UUID.randomUUID().toString();
+        id = i_id;
         userId = i_userId;
     }
 
@@ -50,4 +54,8 @@ public final class ChatterMessage {
         return userId;
     }
 
+    @Override
+    public String toString() {
+        return "userid=" + userId + ", content=" + content;
+    }
 }

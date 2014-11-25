@@ -3,4 +3,3 @@
 package se.dse.pulsarbyexample.chatter;
 
 import se.dse.pulsar.core.api.PulsarModule;
-            

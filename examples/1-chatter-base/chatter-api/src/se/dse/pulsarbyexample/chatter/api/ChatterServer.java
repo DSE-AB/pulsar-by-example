@@ -1,10 +1,8 @@
 package se.dse.pulsarbyexample.chatter.api;
-
-import aQute.bnd.annotation.ProviderType;
+//note: package = *.api means this is a public API
 
 import java.util.List;
 
-@ProviderType
 public interface ChatterServer {
 
     /**
@@ -15,7 +13,7 @@ public interface ChatterServer {
     String login(String i_username);
 
     /**
-     * Send a chat message
+     * Send a chat message.
      * @param i_loginToken Login token, received by the login() method.
      * @param i_message
      * @see #login(String)
@@ -29,5 +27,4 @@ public interface ChatterServer {
      * @return A list of messages.
      */
     List<ChatterMessage> getChatter(long i_sinceTimeStamp, int i_maxCount);
-
 }

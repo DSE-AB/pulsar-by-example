@@ -3,4 +3,3 @@
 package se.dse.pulsarbyexample.chatter.api;
 
 import aQute.bnd.annotation.Version;
-            
