@@ -25,44 +25,66 @@ public class PrettifyPlugin extends Plugin {
             out.append("<script src=\"/pulsar/wiki/html/google-code-prettify/run_prettify.js\"></script>");
         } else {
             String l_filePath = getParam(params, "file", null);
+            String l_title = getParam(params, "title", null);
             String l_lang = getParam(params, "lang", "text");
-            String l_codeclass = getParam(params, "codeclass", "");
+            String l_mark = getParam(params, "mark", null);
+            boolean l_linenums = "true".equalsIgnoreCase(getParam(params, "linenums", null));
+
+            String l_startMark = "<:"+l_mark;
+            String l_endMark = l_mark+":>";
+
             if (l_filePath != null) {
                 File l_sourceFile = new File(rootDir, l_filePath);
+                boolean active = (l_mark == null);
+                boolean headerOutputted = false;
                 try (BufferedReader l_reader = new BufferedReader(new FileReader(l_sourceFile))) {
 
-                    out.append("<p><strong>").append(l_sourceFile.getName()).append("</strong></p>");
-                    out.append("<pre class=\"prettyprint "+l_lang+"\">");
-                    //out.append("<code");
-                    //if(l_codeclass.length() > 0) {
-                    //    out.append(" class=\""+l_codeclass+"\"");
-                    //}
-                    //out.append(">");
                     String s;
+                    int line = 0;
                     while ((s = l_reader.readLine()) != null)
                     {
-                        for(int i = 0; i < s.length(); i++)
-                        {
-                            final char c = s.charAt(i);
-                            switch(c)
-                            {
-                                case '&':
-                                    out.append("&amp;");
-                                    break;
-                                case '<':
-                                    out.append("&lt;");
-                                    break;
-                                case '>':
-                                    out.append("&gt;");
-                                    break;
-                                default:
-                                    out.append(c);
-                                    break;
-                            }
+                        line++;
+                        if (l_mark != null && s.trim().endsWith(l_startMark)) {
+                            active = true;
+
                         }
-                        out.append('\n');
+
+                        if (active && !headerOutputted) {
+                            out.append("<p><strong>").append(l_title != null ? l_title : l_sourceFile.getName()).append("</strong></p>");
+                            out.append("<pre class=\"prettyprint");
+                            if (l_linenums) out.append(" linenums:"+line);
+                            out.append(" "+l_lang).append("\">");
+
+                            headerOutputted = true;
+                        }
+
+                        if (active) {
+
+                            if (l_mark != null && s.trim().endsWith(l_endMark)) {
+                                active = false;
+                            }
+                            s = s.replaceFirst("(^|\\s+)\\S+(<:\\w+|\\w+:>)+\\s*$","");
+
+                            for (int i = 0; i < s.length(); i++) {
+                                final char c = s.charAt(i);
+                                switch (c) {
+                                    case '&':
+                                        out.append("&amp;");
+                                        break;
+                                    case '<':
+                                        out.append("&lt;");
+                                        break;
+                                    case '>':
+                                        out.append("&gt;");
+                                        break;
+                                    default:
+                                        out.append(c);
+                                        break;
+                                }
+                            }
+                            out.append('\n');
+                        }
                     }
-                    //out.append("</code>");
                     out.append("</pre>\n");
 
 
@@ -79,9 +101,5 @@ public class PrettifyPlugin extends Plugin {
         return l_paramValue == null ? i_default : l_paramValue;
     }
 
-
-    private void emmitBlock(StringBuilder out, List<String> lines, String i_meta, String i_lang) {
-
-    }
 
 }

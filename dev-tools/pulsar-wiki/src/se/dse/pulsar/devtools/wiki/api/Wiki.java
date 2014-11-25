@@ -5,16 +5,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-@Path("/")
+@Path("/")                                                                      //<:1
 public interface Wiki {
     @GET
     @Path("index")
     @Produces("text/html")
     String index();
 
-    @GET
+    @GET                                                                        //<:2
     @Path("index/{pagePath: .*}")
     @Produces("text/html")
-    String page(@PathParam("pagePath") String i_pagePath);
+    String page(@PathParam("pagePath") String i_pagePath);                      //2:>
 
-}
+}                                                                               //1:>

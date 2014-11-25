@@ -26,7 +26,11 @@ MyPlugInIdContent
 %%%
 
 # prettify
-%%% prettify lang=java file=../dev-tools/pulsar-wiki/src/se/dse/pulsar/devtools/wiki/api/Wiki.java
+%%% prettify lang=java linenums=true file=../dev-tools/pulsar-wiki/src/se/dse/pulsar/devtools/wiki/api/Wiki.java
+...
+%%%
+# prettify
+%%% prettify lang=java mark=2 linenums=true title="The GET method in wiki/Wiki.java" file=../dev-tools/pulsar-wiki/src/se/dse/pulsar/devtools/wiki/api/Wiki.java
 ...
 %%%
 
@@ -50,3 +54,7 @@ Alice->Bob: Authentication Request
 note right of Bob: Bob thinks about it
 Bob->Alice: Authentication Response
 %%
+
+## References
+* [markdown4j](https://code.google.com/p/markdown4j/) distributed under [The BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause)
+* [google-code-prettify](https://code.google.com/p/google-code-prettify/) distributed under [Apache License, V2](http://www.apache.org/licenses/LICENSE-2.0)

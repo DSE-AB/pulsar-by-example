@@ -11,7 +11,7 @@ body{
     background:#fefefe;
 }
 
-a{ color: #0645ad; text-decoration:none;}
+a{ color: #0645ad; text-decoration:underline;}
 a:visited{ color: #0b0080; }
 a:hover{ color: #06e; }
 a:active{ color:#faa700; }
@@ -34,7 +34,7 @@ img{
 
 h1,h2,h3,h4,h5,h6{
     font-weight:normal;
-    color:#111;
+    color:#151;
     line-height:1em;
 }
 h4,h5,h6{ font-weight: bold; }
@@ -68,6 +68,7 @@ sup { top: -0.5em; }
 sub { bottom: -0.25em; }
 
 ul, ol { margin: 1em 0; padding: 0 0 0 2em; }
+ol li:not([class]) { margin-bottom: 0.5em }
 li p:last-child { margin:0 }
 dd { margin: 0 0 0 2em; }
 

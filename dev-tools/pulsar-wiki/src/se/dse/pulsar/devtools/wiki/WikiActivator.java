@@ -8,7 +8,6 @@ import se.dse.pulsar.core.api.*;
 import se.dse.pulsar.devtools.wiki.api.Wiki;
 import se.dse.pulsar.devtools.wiki.plugins.PrettifyPlugin;
 import se.dse.pulsar.devtools.wiki.plugins.SourceReferencePlugin;
-import se.dse.pulsar.devtools.wiki.plugins.SyntaxHighlighterPlugin;
 import se.dse.pulsar.launcher.exported.Constants;
 import se.dse.pulsar.module.clientaccess.api.configurators.RSConfiguratorFactory;
 import se.dse.pulsar.module.configmanager.api.Config;
@@ -41,7 +40,6 @@ public class WikiActivator extends PulsarActivator {
         File l_pulsarRootDir = new File(System.getProperty(Constants.PULSAR_ROOT_DIR_PROPERTY));
         i_moduleContextBuilder.bindLocal(Plugin[].class).usingInstance(new Plugin[] {
                 new SourceReferencePlugin(l_pulsarRootDir),
-                new SyntaxHighlighterPlugin(l_pulsarRootDir),
                 new PrettifyPlugin(l_pulsarRootDir)
         });
 
