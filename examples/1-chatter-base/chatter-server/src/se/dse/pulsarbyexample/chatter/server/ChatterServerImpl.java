@@ -8,6 +8,7 @@ import se.dse.pulsarbyexample.chatter.api.ChatterServer;
 import se.dse.pulsarbyexample.chatter.server.api.ChatterPersistence;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;

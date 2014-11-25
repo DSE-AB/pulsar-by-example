@@ -16,14 +16,19 @@ public class ChatterServerActivator extends PulsarActivator {
     public void init(ModuleContextBuilder i_moduleContextBuilder) {
         config = lookupService(Config.class);
 
-        i_moduleContextBuilder.consume(ChatterPersistence.class);
-
         i_moduleContextBuilder.publish(ChatterServer.class)
                 .usingClass(ChatterServerImpl.class);
 
-        i_moduleContextBuilder.publish(ChatterPersistence.class)
-                .usingClass(ChatterPersistenceInMemory.class)
-                .named("InMemory");
+        if (config.getBoolean("enableLocalInMemoryPersistence")) {
+
+
+            i_moduleContextBuilder.bindLocal(ChatterPersistence.class)
+                    .usingClass(ChatterPersistenceInMemory.class);
+        } else {
+
+            i_moduleContextBuilder.consume(ChatterPersistence.class);
+        }
+
     }
 }
             
