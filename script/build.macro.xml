@@ -238,7 +238,7 @@
         </javadoc>
     </target>
 
-    <target name="dist" depends="-check-bundle-dist-uptodate" unless="bundle.dist.uptodate" description="Bygger modulen.">
+    <target name="dist" depends="-check-bundle-dist-uptodate" unless="bundle.dist.uptodate" description="Build and create module distribution artifacts">
         <antcall target="dependencies-dist"/>
         <!-- todo: detect changes -->
         <!-- Recreate the distribution directory -->
@@ -264,13 +264,13 @@
             <jvmarg value="-Dse.dse.pulsar.packager.includesrc=${dist.includesrc}"/>
             <jvmarg value="-Dse.dse.pulsar.packager.includejavadoc=true"/>
             <jvmarg value="-Dse.dse.pulsar.packager.moveinternalclasses=${dist.moveinternalclasses}"/>
-            <!--jvmarg value="-Dlogback.configurationFile=${pulsar.dir}/conf/logback.xml"/--><!-- todo genererar loggar under modulkatalogen!-->
+            <!--jvmarg value="-Dlogback.configurationFile=${pulsar.dir}/conf/logback.xml"/-->
             <!-- the pulsar root directory -->
             <arg value="${pulsar.dir}"/>
             <!-- the module directory -->
             <arg value="${bundle.dir}"/>
             <!-- list of libraries to get package semantic versions based on -->
-            <arg line="${depend-compile-list}"/>
+            <arg line='"${depend-compile-list}"'/>
             <arg line='"${compile-list}"'/>
             <classpath>
                 <path>
@@ -305,6 +305,7 @@
     </target>
 
     <target name="-dependencies-compile">
+        <delete dir="${depend-compile}"/>
         <mkdir dir="${depend-compile}"/>
         <foreach list="${dependencies-compile.list}" param="arg.module.name" target="-dependency-compile" trim="true"/>
     </target>
@@ -313,6 +314,7 @@
     </target>
 
     <target name="-dependencies-compile-test">
+        <delete dir="${depend-compile-test}"/>
         <mkdir dir="${depend-compile-test}"/>
         <foreach list="${dependencies-compile-test.list}" param="arg.module.name" target="-dependency-compile-test" trim="true"/>
     </target>
@@ -321,6 +323,7 @@
     </target>
 
     <target name="-dependencies-test">
+        <delete dir="${depend-test}"/>
         <mkdir dir="${depend-test}"/>
         <foreach list="${dependencies-test.list}" param="arg.module.name" target="-dependency-test" trim="true"/>
     </target>
@@ -329,6 +332,7 @@
     </target>
 
     <target name="-dependencies-dist">
+        <delete dir="${depend-dist}"/>
         <mkdir dir="${depend-dist}"/>
         <foreach list="${dependencies-dist.list}" param="arg.module.name" target="-dependency-dist" trim="true"/>
     </target>
@@ -336,7 +340,7 @@
         <fetch-dependency type="dist" todir="${depend-dist}"/>
     </target>
 
-    <target name="clean">
+    <target name="clean" description="Clean compiled sources and fetched dependencies">
         <echo message="* ${ant.project.name}: Cleaning"/>
         <if>
             <istrue value="${clean.src-gen}"/>
