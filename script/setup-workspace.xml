@@ -1,0 +1,9 @@
+<project name="setup-workspace" basedir=".." default="setup">
+
+
+    <target name="setup" description="Setup workspace">
+        <ant antfile="script/get-pulsar.xml" target="get-latest-pulsar"/>
+    </target>
+
+
+</project>
