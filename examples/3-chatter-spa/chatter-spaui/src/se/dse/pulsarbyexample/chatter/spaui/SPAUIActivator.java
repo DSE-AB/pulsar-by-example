@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import se.dse.pulsar.core.api.*;
 import se.dse.pulsar.module.configmanager.api.Config;
 
-public class Activator extends PulsarActivator {
-    private final static Logger logger = LoggerFactory.getLogger(Activator.class);
+public class SPAUIActivator extends PulsarActivator {
+    private final static Logger logger = LoggerFactory.getLogger(SPAUIActivator.class);
     private Config config;
 
     @Override
