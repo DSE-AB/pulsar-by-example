@@ -33,6 +33,12 @@ may take som time to complete.*
     
 * Open the top project directory (LEB_System) with IntelliJ IDEA. *Note: You need to open IDEA, then 
 select `Open Project` from the splash menu (or choose `Open...` from the file menu) and navigate to select the directory.*
+
+### Running the examples
+* Start the ´Pulsar (developer)` Run Configuration in Intellij
+* When the ´AdminConsole´ opens click the ´Install´ tab and install the ´pulsar.devtools.wiki´ module
+* When the module is installed navigate you browser to the page [`/pulsar/wiki/pbe.html`](http://localhost:8080/pulsar/wiki/pbe.html)
+
     
 Project Structure
 -----------------
