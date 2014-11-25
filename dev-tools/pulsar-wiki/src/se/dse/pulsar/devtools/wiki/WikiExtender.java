@@ -62,7 +62,9 @@ public class WikiExtender implements PulsarModuleExtender {
     public String getIndex() {
         StringBuilder l_stringBuilder = new StringBuilder();
         l_stringBuilder.append("<html>");
+        l_stringBuilder.append("<head><link rel='stylesheet' href='/pulsar/wiki/html/css/markdown.css'/></head>");
         l_stringBuilder.append("<body>");
+        l_stringBuilder.append("<h1>Dev Wiki - Installed Modules</h1>");
         l_stringBuilder.append("<ul>");
         for (String s : index.keySet()) {
             l_stringBuilder.append("<li><a href=\"index/").append(s).append("/\">").append(s).append("</a></li>");

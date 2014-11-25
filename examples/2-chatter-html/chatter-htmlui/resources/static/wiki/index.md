@@ -19,10 +19,10 @@ Click on the follwing link to get to the interface page:
 
 1. Enter a username and press `Login`
 2. Enter a message and press `Say`
-3. Open several browser sessions (different browsers or different machines) and see messages sync
+3. Open several browser sessions (different browsers or different machines) and see messages sync. Hint: You can also use an incognito window in the Chrome Browser. 
 
 ## Excersises
-1. Extend the message list with a column show how many seconds ago the messge was sent. Hint: Check out the XSL template.
+1. Extend the message list with a column show how many seconds ago the message was sent. Hint: Check out the XSL template.
 
 ## References
 
