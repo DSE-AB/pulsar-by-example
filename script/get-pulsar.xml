@@ -13,13 +13,16 @@
 
     <target name="get-latest-pulsar" depends="-get-pulsar, -unpack" description="Download and install the latest version of Pulsar"/>
 
-    <target name="-get-pulsar">
-
-        <mkdir dir="${dest.dir}"/>
+    <target name="-get-latest-properties">
 
         <loadproperties>
             <url url="https://dl.dropboxusercontent.com/u/599403/Pulsar/pulsar-latest.properties"/>
         </loadproperties>
+    </target>
+
+    <target name="-get-pulsar" depends="-get-latest-properties">
+
+        <mkdir dir="${dest.dir}"/>
 
         <if>
             <available file="${dest.dir}/${launcher}"/>
@@ -76,7 +79,7 @@
 
     </target>
 
-    <target name="-unpack" description="unpack">
+    <target name="-unpack" depends="-get-latest-properties">
 
         <delete dir="${lib-devel.dir}/compile"/>
         <delete dir="${lib-devel.dir}/dist"/>
@@ -159,11 +162,16 @@
         <delete file="${lib-devel.dir}/docs/pulsar-javadoc.zip"/>
 
         <antcall target="-create-local-devlink"/>
+        <antcall target="-relink-pulsar"/>
     </target>
 
     <target name="-create-local-devlink">
         <echo file="pulsar/local-dev-link.pulsarlink">../dist/repository.xml
         </echo>
+    </target>
+
+    <target name="-relink-pulsar" depends="-get-latest-properties">
+        <java jar="pulsar/${launcher}" args="--relink" fork="true"/>
     </target>
 
 </project>
