@@ -8,3 +8,5 @@ classes-test
 depend
 dist
 docs
+
+/derby.log
