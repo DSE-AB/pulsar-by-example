@@ -20,12 +20,9 @@ public class ChatterServerActivator extends PulsarActivator {
                 .usingClass(ChatterServerImpl.class);
 
         if (config.getBoolean("enableLocalInMemoryPersistence")) {
-
-
             i_moduleContextBuilder.bindLocal(ChatterPersistence.class)
                     .usingClass(ChatterPersistenceInMemory.class);
         } else {
-
             i_moduleContextBuilder.consume(ChatterPersistence.class);
         }
 

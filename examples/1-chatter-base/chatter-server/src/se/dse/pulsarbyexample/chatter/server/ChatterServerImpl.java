@@ -8,14 +8,14 @@ import se.dse.pulsarbyexample.chatter.api.ChatterServer;
 import se.dse.pulsarbyexample.chatter.server.api.ChatterPersistence;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Singleton
+@Singleton  // here we use the singleton scope, other scopes are module (remove the annotation)
+            // and as a more advanced option you could use a factory when publishing
 public class ChatterServerImpl implements ChatterServer {
 
     private final static Logger logger = LoggerFactory.getLogger(ChatterServerImpl.class);
