@@ -9,6 +9,8 @@ import javax.inject.Named;
 import java.io.PrintStream;
 import java.util.List;
 
+import static se.dse.pulsarbyexample.chatter.shellui.ChatterShellUIActivator.POLL_FREQUENCY_MS;
+
 public class ChatterPollingThread extends Thread {
 
     private final ChatterServer chatterServer;
@@ -19,7 +21,7 @@ public class ChatterPollingThread extends Thread {
     @Inject
     public ChatterPollingThread(ChatterServer i_chatterServer,
                                 @Named("ChatPrintStream") PrintStream i_printStream,
-                                @Named("PollFrequencyMS") long i_pollFrequencyMS) {
+                                @Named(POLL_FREQUENCY_MS) long i_pollFrequencyMS) {
         chatterServer = i_chatterServer;
         printStream = i_printStream;
         pollFrequencyMS = i_pollFrequencyMS;
