@@ -59,6 +59,16 @@ provide a general guide. Also there are some documented directories that are not
     |   |- test
     |   |- tools
     |- examples
+        |- 1-chatter-base
+            |- chatter-api
+            |- chatter-server
+            |- chatter-shellui
+        |- 2-chatter-html
+            |- chatter-htmlui
+        |- 3-chatter-spaui
+            |- chatter-spaui
+        |- 4-chatter-store
+            |- chatter-store
     |- script
     |   |- setup-workspace.xml
     |   
