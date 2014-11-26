@@ -5,10 +5,10 @@
 The Chatter HTML UI module provides a super simple and plain user interface to the Chatter Server. A user may set their alias and then send chat messages to all other users.
 
 ## Module exemplifies
-* Static content
+* Static content (css file)
 * HTML templates (dynamic content)
 * JAXB binding
-* XSLT used to transform XML into HTML
+* XSLT used to transform XML into HTML, using the `<pulsar:method/>` tag
 * Publishing service methods to be invoked from the web using `@PulsarMethod` annotations
 * Consuming services
 * Reloading of template part using JS method `reloadPulsarTag()`
