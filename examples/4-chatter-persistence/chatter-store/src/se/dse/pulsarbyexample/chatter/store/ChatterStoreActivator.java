@@ -16,6 +16,7 @@ public class ChatterStoreActivator extends PulsarActivator {
     private final static Logger logger = LoggerFactory.getLogger(ChatterStoreActivator.class);
 
     public final static String DB_NAME = "ChatterDB";
+    public static final String NO_EXTERNAL_UPDATES_TABLE_STATUS_HANDLER = "se.dse.pulsar.module.databaseaccess.cache.handlers.NoExternalUpdateTableStatusHandler";
 
     private Config config;
     private DatabaseAccess databaseAccess;
@@ -54,20 +55,21 @@ public class ChatterStoreActivator extends PulsarActivator {
         DatabaseAccessPool l_databaseAccessPool = databaseAccess.getDatabasePool(DB_NAME);
         if (l_databaseAccessPool == null) {
             try {
+
                 l_databaseAccessPool = databaseAccess.createConnectionPool(
                         DB_NAME,
-                        "jdbc:derby:memory:db;create=true",
-                        "dbuser",
-                        "dbpassword",
-                        "org.apache.derby.jdbc.EmbeddedDriver",
-                        1,
-                        5,
-                        null,
-                        false,
-                        "se.dse.pulsar.module.databaseaccess.cache.handlers.NoExternalUpdateTableStatusHandler",
-                        100,
-                        1000 * 1000,
-                        null
+                        config.getString("dburl"),
+                        config.getString("dbuser"),
+                        config.getString("dbpassword"),
+                        config.getString("driver_classname"),
+                        config.getInteger("initial_connections"),
+                        config.getInteger("max_connections"),
+                        null,   // no extra properties for the JDBC driver
+                        false,  // cache disable
+                        NO_EXTERNAL_UPDATES_TABLE_STATUS_HANDLER, // exclusive use of db
+                        100,            // cache objects limit, not used
+                        1000 * 1000,    // cache size, not used
+                        null    // no connection initialization statement
                 );
 
                 try {
