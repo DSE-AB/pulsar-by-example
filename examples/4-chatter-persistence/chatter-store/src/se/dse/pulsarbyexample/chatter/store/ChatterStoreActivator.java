@@ -28,8 +28,7 @@ public class ChatterStoreActivator extends PulsarActivator {
 
         i_moduleContextBuilder.consume(DatabaseAccessPool.class).named(DB_NAME);
 
-        i_moduleContextBuilder.publish(ChatterPersistence.class).usingClass(ChatterPersistenceInDB.class)
-                .named("DBPersistence");
+        i_moduleContextBuilder.publish(ChatterPersistence.class).usingClass(ChatterPersistenceInDB.class);
     }
 
     @Override
@@ -55,7 +54,6 @@ public class ChatterStoreActivator extends PulsarActivator {
         DatabaseAccessPool l_databaseAccessPool = databaseAccess.getDatabasePool(DB_NAME);
         if (l_databaseAccessPool == null) {
             try {
-
                 l_databaseAccessPool = databaseAccess.createConnectionPool(
                         DB_NAME,
                         config.getString("dburl"),
