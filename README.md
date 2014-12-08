@@ -18,13 +18,15 @@ Workspace setup
 
 ### Installing the workspace
 * Fork the [pulsar-by-example repository](https://github.com/DSE-AB/pulsar-by-example) to your own GitHub account
-* Clone the repository to your local machine, and set up push to your own fork
+* Clone the repository to your local machine, and set up push to your own fork (optional)
 
     `cd <local machine project directory>`
     
     `git clone https://github.com/DSE-AB/pulsar-by-example.git`
     
     `cd pulsar-by-example`
+    
+    `git remote set-url --push origin https://github.com/*Your-GitHub-User-Name-Here*/pulsar-by-example.git` (optional)
     
 * Run the setup script. *Note: Since the Pulsar environment is downloaded the first time this step 
 may take som time to complete.*
