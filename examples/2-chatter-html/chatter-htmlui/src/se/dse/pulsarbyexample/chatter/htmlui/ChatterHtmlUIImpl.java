@@ -78,7 +78,7 @@ public class ChatterHtmlUIImpl implements ChatterHtmlUI {
         try {
             chatterServer.chat(l_chatterToken, i_message);
         } catch (ChatterException e) {
-            logger.warn("[say] failed to send chat message: {}", e);
+            logger.warn("[say] failed to send chat message: {}", e.toString());
         }
 
     }
