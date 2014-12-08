@@ -1,6 +1,14 @@
 <html>
 <head>
+    <!-- include css from resources/static/html/css -->
+    <link rel='stylesheet' href='/pulsar/pulsarbyexample.chatter.htmlui/html/css/chatter.css'/>
+
+    <!-- include javascript from resources/static/html/ls -->
+    <script type="text/javascript" src="/pulsar/pulsarbyexample.chatter.htmlui/html/js/chatter.js"></script>
+
+    <!-- include javascript for Pulsar Methods exported in the 'pulsarbyexample.chatter.htmlui' module  -->
     <script type="text/javascript" src="/pulsar/js?module=pulsarbyexample.chatter.htmlui"></script>
+
     <script type="text/javascript">
         document.observe("dom:loaded", function() {
             setInterval(function() {reloadPulsarTag("chatterTag")}, 1000);
