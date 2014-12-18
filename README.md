@@ -33,7 +33,7 @@ may take som time to complete.*
 
     `ant -f script/setup-workspace.xml`
     
-* Open the top project directory (LEB_System) with IntelliJ IDEA. *Note: You need to open IDEA, then 
+* Open the top project directory (pulsar-by-example) with IntelliJ IDEA. *Note: You need to open IDEA, then 
 select `Open Project` from the splash menu (or choose `Open...` from the file menu) and navigate to select the directory.*
 
 ### Running the examples
