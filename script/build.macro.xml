@@ -213,6 +213,7 @@
 
     <target name="-javadoc" unless="no.javadoc">
         <echo message="* ${ant.project.name}: Generating JavaDoc"/>
+        <mkdir dir="${docs-api}"/>
         <javadoc
                 destdir="${docs-api}"
                 author="false"
