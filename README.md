@@ -17,8 +17,10 @@ Workspace setup
     * The workspace configuration assumes that JDK 7 is configured as a SDK in IntelliJ, and named "1.7".
 
 ### Installing the workspace
-* Fork the [pulsar-by-example repository](https://github.com/DSE-AB/pulsar-by-example) to your own GitHub account
-* Clone the repository to your local machine, and set up push to your own fork (optional)
+
+* Install the workspace using _one_ of these two options:
+
+1. Clone the repository [pulsar-by-example repository](https://github.com/DSE-AB/pulsar-by-example) to your local machine
 
     `cd <local machine project directory>`
     
@@ -26,22 +28,46 @@ Workspace setup
     
     `cd pulsar-by-example`
     
+    If you forked the project on GitHub you might want to set the push url (optional)
+    
     `git remote set-url --push origin https://github.com/*Your-GitHub-User-Name-Here*/pulsar-by-example.git` (optional)
     
+2. Download the zipped project from GitHub and expand it, then open a shell and cd into the expanded directory.
+ 
 * Run the setup script. *Note: Since the Pulsar environment is downloaded the first time this step 
 may take som time to complete.*
 
     `ant -f script/setup-workspace.xml`
     
+
+### Building the examples and starting Pulsar with IntelliJ IDEA
+
 * Open the top project directory (pulsar-by-example) with IntelliJ IDEA. *Note: You need to open IDEA, then 
 select `Open Project` from the splash menu (or choose `Open...` from the file menu) and navigate to select the directory.*
-
-### Running the examples
 * First you need to build the examples, the simplest way is to use the Ant build script `master-build/dist-all` which will compile and package (dist) all the example modules.
 * Start the ´Pulsar (developer)` Run Configuration in Intellij
-* When the ´AdminConsole´ opens click the ´Install´ tab and install the ´pulsar.devtools.wiki´ module
-* When the module is installed navigate you browser to the page [`/pulsar/wiki/index.html`](http://localhost:8080/pulsar/wiki/index.html) (The default port for Pulsar is 8080, if that is not available Pulsar will use 8081 instead.) 
 
+### Building the examples and starting Pulsar from the command line
+
+Make sure your command shell has the top level project directory as the current directory. The one where this README.md resides.
+
+* Build the example modules
+
+    `ant -f script/build.xml dist-all`
+    
+* Start Pulsar
+
+    `cd pulsar`
+    `java -jar pulsar.launcher-v.v.v.jar`
+
+### Installing the examples    
+    
+After a few seconds your default web browser will automatically be opened to show the `AdminConsole` UI. 
+    
+* When the ´AdminConsole´ opens click the ´Install´ tab and install the ´pulsar.devtools.wiki´ module.
+* When the module is installed navigate you browser to the page [`/pulsar/wiki/index.html`](http://localhost:8080/pulsar/wiki/index.html) (The default port for Pulsar is 8080, if that is not available Pulsar will use 8081 instead.) 
+* The Wiki contains further information on the different example modules and how to use them.
+    
     
 Project Structure
 -----------------
